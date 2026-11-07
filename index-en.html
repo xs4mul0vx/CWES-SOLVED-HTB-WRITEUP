@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selling CWES report</title>
+  <meta name="description" content="Selling cwes report. Contact via Discord (S4mul0v) or Telegram (ThTh). $50 in crypto.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #05070a;
+      --panel: #0b1015;
+      --border: #12331f;
+      --green: #00ff88;
+      --green-dim: #00b35f;
+      --text: #c8f7dc;
+      --muted: #5e8a72;
+      --red: #ff5f56;
+      --yellow: #ffbd2e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "JetBrains Mono", Consolas, monospace;
+      min-height: 100vh;
+      padding: 32px 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    /* Background character rain */
+    #matrix {
+      position: fixed; inset: 0;
+      z-index: -1; opacity: .18;
+    }
+    /* Old monitor scanlines */
+    body::after {
+      content: ""; position: fixed; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0 1px, transparent 1px 3px);
+    }
+    .wrap { max-width: 760px; margin: 0 auto; }
+
+    .terminal {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 0 40px rgba(0,255,136,.08);
+      overflow: hidden;
+    }
+    .bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      background: #070b0f;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px; color: var(--muted);
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot.r { background: var(--red); }
+    .dot.y { background: var(--yellow); }
+    .dot.g { background: var(--green-dim); }
+    .bar span { margin-left: 8px; }
+
+    .body { padding: 28px 24px; }
+    .prompt { color: var(--muted); font-size: 14px; }
+    .prompt b { color: var(--green); }
+
+    h1 {
+      font-size: clamp(24px, 6vw, 40px);
+      color: var(--green);
+      text-shadow: 0 0 12px rgba(0,255,136,.6);
+      margin: 10px 0 6px;
+      word-break: break-word;
+    }
+    .cursor {
+      display: inline-block; width: .55em; height: 1em;
+      background: var(--green); vertical-align: -0.12em;
+      animation: blink 1s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .sub { color: var(--muted); margin-bottom: 26px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      background: rgba(0,255,136,.02);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .card:hover { border-color: var(--green-dim); box-shadow: 0 0 18px rgba(0,255,136,.15); }
+    .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .big { font-size: 30px; font-weight: 700; color: var(--green); }
+    .val { font-size: 16px; color: var(--text); }
+
+    .section-title {
+      color: var(--green); font-size: 14px; margin: 26px 0 12px;
+    }
+    .section-title::before { content: "## "; color: var(--muted); }
+
+    .contact {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px 16px; margin-bottom: 10px;
+    }
+    .contact .who { display: flex; flex-direction: column; }
+    .contact .user { color: var(--green); font-weight: 700; font-size: 18px; }
+    .btns { display: flex; gap: 8px; }
+    .btn {
+      font-family: inherit; font-size: 13px;
+      color: var(--bg); background: var(--green);
+      border: none; border-radius: 6px;
+      padding: 8px 14px; cursor: pointer; text-decoration: none;
+      font-weight: 700;
+    }
+    .btn:hover { background: #4dffaa; }
+    .btn.ghost { background: transparent; color: var(--green); border: 1px solid var(--green-dim); }
+    .btn.ghost:hover { background: rgba(0,255,136,.1); }
+
+    ol.steps { list-style: none; counter-reset: s; }
+    ol.steps li {
+      counter-increment: s;
+      padding: 8px 0 8px 40px; position: relative;
+      border-bottom: 1px dashed var(--border);
+    }
+    ol.steps li:last-child { border-bottom: none; }
+    ol.steps li::before {
+      content: "[" counter(s) "]";
+      position: absolute; left: 0; color: var(--green);
+    }
+
+    .trust {
+      margin-top: 22px;
+      border-left: 3px solid var(--green);
+      padding: 12px 16px;
+      background: rgba(0,255,136,.04);
+    }
+    .ok { color: var(--green); }
+
+    footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 22px; }
+
+    #toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: var(--green); color: var(--bg); font-weight: 700;
+      padding: 8px 16px; border-radius: 6px; font-size: 13px;
+      opacity: 0; transition: opacity .3s; pointer-events: none;
+    }
+    #toast.show { opacity: 1; }
+
+    @media (max-width: 480px) {
+      .body { padding: 22px 16px; }
+      .btns { width: 100%; }
+      .btn { flex: 1; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <div class="wrap">
+    <div class="terminal">
+      <div class="bar">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span>root@market:~</span>
+      </div>
+
+      <div class="body">
+        <p class="prompt"><b>root@market</b>:~$ ./venta.sh</p>
+        <h1>&gt; SELLING <span class="producto">CWES</span> REPORT<span class="cursor"></span></h1>
+        <p class="sub">// This is to help you, and for you to help me.</p>
+
+        <div class="grid">
+          <div class="card">
+            <div class="label">Price</div>
+            <div class="big">$50</div>
+            <div class="val">per report</div>
+          </div>
+          <div class="card">
+            <div class="label">Payment</div>
+            <div class="big">₿ Crypto</div>
+            <div class="val">only method accepted</div>
+          </div>
+          <div class="card">
+            <div class="label">Delivery</div>
+            <div class="big">⚡ Fast</div>
+            <div class="val">once payment is confirmed</div>
+          </div>
+        </div>
+
+        <h2 class="section-title">Contact</h2>
+
+        <div class="contact">
+          <div class="who">
+            <span class="label">Discord</span>
+            <span class="user">S4mul0v</span>
+          </div>
+          <div class="btns">
+            <button class="btn" onclick="copiar('S4mul0v')">Copy username</button>
+          </div>
+        </div>
+
+        <div class="contact">
+          <div class="who">
+            <span class="label">Telegram</span>
+            <span class="user">@ThTh</span>
+          </div>
+          <div class="btns">
+            <a class="btn" href="https://t.me/ThTh" target="_blank" rel="noopener">Open chat</a>
+            <button class="btn ghost" onclick="copiar('ThTh')">Copy</button>
+          </div>
+        </div>
+
+        <h2 class="section-title">How it works</h2>
+        <ol class="steps">
+          <li>Message me on Discord or Telegram.</li>
+          <li>We talk and, if you want, I show you proof of my certification.</li>
+          <li>You pay <span class="ok">$50</span> in crypto.</li>
+          <li>Once the payment is confirmed, I send you the report.</li>
+        </ol>
+
+        <div class="trust">
+          <span class="ok">[✔]</span> 100% trustworthy — we can talk before you pay and I'll show you proof of my cert.
+        </div>
+      </div>
+    </div>
+
+    <footer>&lt;/&gt; <span class="producto">CWES</span> report · 2026</footer>
+  </div>
+
+  <div id="toast">Copied ✔</div>
+
+  <script>
+    // ===== CHANGE THIS to what you sell =====
+    const PRODUCTO = "CWES-WRITE UP";
+    // =========================================
+
+    document.querySelectorAll(".producto").forEach(el => el.textContent = PRODUCTO);
+    document.title = "Selling " + PRODUCTO + " report";
+
+    function copiar(texto) {
+      const t = document.getElementById("toast");
+      const mostrar = () => { t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 1500); };
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(texto).then(mostrar).catch(() => prompt("Copy the username:", texto));
+      } else {
+        prompt("Copy the username:", texto);
+      }
+    }
+
+    // Background character rain
+    const c = document.getElementById("matrix");
+    const ctx = c.getContext("2d");
+    const chars = "01アイウエオカキクケコ$#@%&";
+    const size = 16;
+    let cols, drops;
+    function resize() {
+      c.width = innerWidth; c.height = innerHeight;
+      cols = Math.floor(c.width / size);
+      drops = Array(cols).fill(0).map(() => Math.random() * c.height / size);
+    }
+    resize();
+    addEventListener("resize", resize);
+    setInterval(() => {
+      ctx.fillStyle = "rgba(5,7,10,.12)";
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.fillStyle = "#00ff88";
+      ctx.font = size + "px monospace";
+      drops.forEach((y, i) => {
+        ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * size, y * size);
+        drops[i] = (y * size > c.height && Math.random() > .975) ? 0 : y + 1;
+      });
+    }, 50);
+  </script>
+</body>
+</html>
